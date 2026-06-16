@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casas – AC Bienes Raíces</title>
+
+  <!--
+    ============================================================
+    FAVICON
+    Para cambiar el favicon, reemplaza "img/logo.png" con la ruta
+    de tu nueva imagen. Para quitarlo, elimina esta línea completa.
+    ============================================================
+  -->
+  <link rel="icon" type="image/png" href="img/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --rojo:            #C32018;
+      --rojo-hover:      #A81B13;
+      --blanco:          #F5F5F5;
+      --negro:           #000000;
+      --gris:            #555555;
+      --gris-claro:      #cdcaca;
+      --gris-fondo:      #f4f4f4;
+      --verde-whatsapp:  #25D366;
+      --fuente-display:  'Cormorant Garamond', Georgia, serif;
+      --fuente-body:     'DM Sans', sans-serif;
+      --radio:           4px;
+      --transicion:      0.3s ease;
+      --max-ancho:       1160px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--fuente-body); background: var(--blanco); color: var(--negro); line-height: 1.7; overflow-x: hidden; }
+    img  { display: block; max-width: 100%; height: auto; }
+    a    { text-decoration: none; color: inherit; }
+    ul   { list-style: none; }
+
+    /* WHATSAPP */
+    .whatsapp-btn {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 58px; height: 58px; background: var(--verde-whatsapp);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4); z-index: 600;
+      transition: transform var(--transicion), box-shadow var(--transicion);
+    }
+    .whatsapp-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
+    .whatsapp-btn i { font-size: 26px; color: #fff; }
+
+    /* HEADER */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 5%; background: var(--negro);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.35);
+      transition: padding var(--transicion);
+    }
+    /*
+      LOGO IMAGEN
+      Reemplaza "img/logo.png" con la ruta real de tu logo.
+    */
+    .logo-container { display: flex; align-items: center; max-width: 80px; transition: transform var(--transicion); }
+    .logo-container:hover { transform: scale(1.03); }
+    .logo-img { width: 100%; height: auto; object-fit: contain; }
+
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { font-size: 0.76rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris-claro); position: relative; padding-bottom: 4px; transition: color var(--transicion); }
+    .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--gris-claro); transition: width var(--transicion); }
+    .nav-links a:hover { color: var(--gris-claro); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 26px; height: 2px; background: var(--blanco); transition: transform var(--transicion), opacity var(--transicion); }
+    .hamburger.abierto span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.abierto span:nth-child(2) { opacity: 0; }
+    .hamburger.abierto span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .nav-mobile { display: none; position: fixed; inset: 0; background: var(--negro); flex-direction: column; align-items: center; justify-content: center; gap: 28px; z-index: 999; }
+    .nav-mobile.visible { display: flex; }
+    .nav-mobile a { font-family: var(--fuente-display); font-size: clamp(1.6rem, 6vw, 2.4rem); color: var(--blanco); letter-spacing: 0.04em; transition: color var(--transicion); }
+    .nav-mobile a:hover { color: var(--rojo); }
+    .nav-mobile .cerrar { position: absolute; top: 22px; right: 5%; font-size: 2.2rem; color: var(--blanco); background: none; border: none; cursor: pointer; }
+
+    /* HERO INTERIOR */
+    .hero-interior { position: relative; padding: 120px 5% 72px; background: linear-gradient(135deg, rgba(195,32,24,0.88) 0%, rgba(0,0,0,0.95) 100%); color: var(--blanco); overflow: hidden; }
+    .hero-interior::before { content: ''; position: absolute; inset: 0; background: url('img/casas.png') center/cover no-repeat; opacity: 0.08; z-index: 0; }
+    .hero-interior-contenido { position: relative; z-index: 1; max-width: var(--max-ancho); margin: 0 auto; }
+    .eyebrow { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 14px; }
+    .hero-interior h1 { font-family: var(--fuente-display); font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 700; line-height: 1.15; margin-bottom: 18px; }
+    .hero-interior p { font-size: 1rem; line-height: 1.8; color: rgba(255,255,255,0.82); max-width: 640px; }
+
+    .linea-roja { display: block; width: 48px; height: 3px; background: var(--rojo); margin: 14px 0 22px; }
+
+    /* TEXTO + IMAGEN */
+    .seccion-texto-imagen { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding: 80px 5%; max-width: var(--max-ancho); margin: 0 auto; }
+    .seccion-texto-imagen.invertida { direction: rtl; }
+    .seccion-texto-imagen.invertida > * { direction: ltr; }
+    .seccion-texto h2 { font-family: var(--fuente-display); font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+    .seccion-texto p { font-size: 0.97rem; line-height: 1.85; color: var(--gris); margin-bottom: 14px; }
+    .seccion-imagen img { border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,0.12); width: 100%; object-fit: cover; }
+
+    /* CARDS */
+    .seccion-cards { background: var(--gris-fondo); padding: 80px 5%; }
+    .seccion-cards-inner { max-width: var(--max-ancho); margin: 0 auto; }
+    .seccion-cards h2 { font-family: var(--fuente-display); font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 700; margin-bottom: 8px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 40px; }
+    .card { background: #fff; border-left: 4px solid var(--rojo); border-radius: var(--radio); padding: 28px 24px; box-shadow: 0 4px 18px rgba(0,0,0,0.06); transition: transform var(--transicion), box-shadow var(--transicion); }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+    .card-num { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rojo); margin-bottom: 10px; }
+    .card h3 { font-family: var(--fuente-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 10px; color: var(--negro); }
+    .card p { font-size: 0.9rem; line-height: 1.7; color: var(--gris); }
+
+    /* CTA */
+    .cta-banner { background: var(--negro); padding: 72px 5%; text-align: center; }
+    .cta-banner h2 { font-family: var(--fuente-display); font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700; color: var(--blanco); margin-bottom: 14px; }
+    .cta-banner p { font-size: 1rem; color: rgba(255,255,255,0.7); margin-bottom: 32px; max-width: 520px; margin-left: auto; margin-right: auto; }
+    .btn-cta { display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px; background: var(--rojo); color: #fff; border-radius: var(--radio); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; transition: background var(--transicion), transform var(--transicion); }
+    .btn-cta:hover { background: var(--rojo-hover); transform: translateY(-2px); }
+    .btn-cta i { font-size: 1.1rem; }
+
+    /* FOOTER */
+    footer { background: #1a1a1a; color: var(--blanco); padding: 40px 5%; text-align: center; }
+    .footer-logo { font-family: var(--fuente-display); font-size: 1.4rem; font-weight: 700; margin-bottom: 18px; color: var(--gris-claro); }
+    .redes-sociales { display: flex; gap: 16px; justify-content: center; margin-bottom: 18px; }
+    .redes-sociales a { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,0.1); font-size: 1.15rem; color: var(--blanco); transition: background var(--transicion); }
+    .redes-sociales a.facebook:hover  { background: #1877F2; }
+    .redes-sociales a.instagram:hover { background: #E4405F; }
+    .redes-sociales a.tiktok:hover    { background: #000; border: 1px solid #fff; }
+    .footer-copy { font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+
+    /* ANIMACIONES */
+    .animar { opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .animar.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVO */
+    @media (max-width: 900px) {
+      .seccion-texto-imagen { grid-template-columns: 1fr; gap: 36px; padding: 56px 5%; }
+      .seccion-texto-imagen.invertida { direction: ltr; }
+    }
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      .nav-links  { display: none; }
+      .whatsapp-btn { bottom: 18px; right: 18px; width: 50px; height: 50px; }
+      .whatsapp-btn i { font-size: 22px; }
+      .hero-interior { padding: 100px 5% 56px; }
+      .seccion-cards { padding: 56px 5%; }
+      .cta-banner    { padding: 56px 5%; }
+    }
+    @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <a href="https://wa.me/524722449605" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+    <i class="ri-whatsapp-line"></i>
+  </a>
+
+  <header id="header">
+    <!--
+      LOGO IMAGEN
+      Reemplaza "img/logo.png" con la ruta real de tu logo.
+    -->
+    <a href="index.html" class="logo-container" aria-label="AC Bienes Raíces – Inicio">
+      <img src="img/logo.png" alt="AC Bienes Raíces" class="logo-img" />
+    </a>
+    <nav aria-label="Navegación principal">
+      <ul class="nav-links">
+        <li><a href="compra.html">Compra/Venta</a></li>
+        <li><a href="traspasos.html">Traspasos</a></li>
+        <li><a href="casas.html">Casas</a></li>
+        <li><a href="terrenos.html">Terrenos</a></li>
+        <li><a href="credito_infonavit.html">Crédito Infonavit</a></li>
+        <li><a href="gestion-notarial.html">Asesoría Legal</a></li>
+      </ul>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <nav class="nav-mobile" id="navMobile" aria-label="Menú móvil">
+    <button class="cerrar" id="cerrarMenu" aria-label="Cerrar menú"><i class="ri-close-line"></i></button>
+    <a href="compra.html"            class="nav-mobile-link">Compra/Venta</a>
+    <a href="traspasos.html"         class="nav-mobile-link">Traspasos</a>
+    <a href="casas.html"             class="nav-mobile-link">Casas</a>
+    <a href="terrenos.html"          class="nav-mobile-link">Terrenos</a>
+    <a href="credito_infonavit.html" class="nav-mobile-link">Crédito Infonavit</a>
+    <a href="gestion-notarial.html"  class="nav-mobile-link">Asesoría Legal</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-interior">
+    <div class="hero-interior-contenido animar">
+      <span class="eyebrow">Nuestro Catálogo</span>
+      <h1>Casas para cada<br>etapa de tu vida</h1>
+      <p>Ofrecemos una amplia variedad de casas para diferentes necesidades y presupuestos. Cada propiedad es evaluada cuidadosamente para brindarte opciones seguras, funcionales y ubicadas en zonas con potencial de crecimiento y plusvalía.</p>
+    </div>
+  </section>
+
+  <!-- CASAS EN GENERAL -->
+  <div class="seccion-texto-imagen">
+    <div class="seccion-texto animar">
+      <span style="color:var(--rojo);font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">Catálogo</span>
+      <h2>Amplia variedad<br>de opciones</h2>
+      <span class="linea-roja"></span>
+      <p>Ofrecemos una amplia variedad de casas para diferentes necesidades y presupuestos. Cada propiedad es evaluada cuidadosamente para brindarte opciones seguras, funcionales y ubicadas en zonas con potencial de crecimiento y plusvalía.</p>
+    </div>
+    <div class="seccion-imagen animar">
+      <img src="img/casas.png" alt="Casas en venta en Silao" />
+    </div>
+  </div>
+
+  <!-- CASAS CON ADEUDO -->
+  <div class="seccion-texto-imagen invertida" style="background:#fff;">
+    <div class="seccion-texto animar">
+      <span style="color:var(--rojo);font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">Oportunidad de Inversión</span>
+      <h2>Casas con adeudo:<br>oportunidades únicas</h2>
+      <span class="linea-roja"></span>
+      <p>Contamos con propiedades que actualmente presentan algún tipo de adeudo —por falta de pago, problemas legales o situaciones financieras complejas. Estas pueden representar una excelente oportunidad para compradores que buscan adquirir una casa a precio reducido.</p>
+      <p>Nuestro equipo especializado en gestión legal y financiera trabaja para facilitar el proceso de compra, brindando asesoría personalizada y soluciones efectivas.</p>
+    </div>
+    <div class="seccion-imagen animar">
+      <img src="img/adeudos unicas.png" alt="Casas con adeudo – oportunidad de inversión" />
+    </div>
+  </div>
+
+  <!-- TARJETAS -->
+  <section class="seccion-cards">
+    <div class="seccion-cards-inner">
+      <h2 class="animar">¿Por qué considerar una casa con adeudo?</h2>
+      <span class="linea-roja animar"></span>
+      <div class="cards-grid">
+        <div class="card animar">
+          <p class="card-num">01</p>
+          <h3>Precios de Adquisición Atractivos</h3>
+          <p>Las casas con adeudo suelen ofrecerse a un costo menor que propiedades similares en el mercado, permitiéndote maximizar tu inversión y obtener mayor valor por tu dinero.</p>
+        </div>
+        <div class="card animar">
+          <p class="card-num">02</p>
+          <h3>Amplia Variedad de Opciones</h3>
+          <p>Contamos con casas que se adaptan a diferentes estilos de vida, necesidades familiares y presupuestos: desde viviendas para familias pequeñas hasta propiedades con espacios más amplios.</p>
+        </div>
+        <div class="card animar">
+          <p class="card-num">03</p>
+          <h3>Potencial de Plusvalía</h3>
+          <p>Al regularizar la situación financiera de una propiedad con adeudo, es posible incrementar significativamente su valor comercial, convirtiéndola en una alternativa interesante de inversión.</p>
+        </div>
+        <div class="card animar">
+          <p class="card-num">04</p>
+          <h3>Seguridad y Confianza</h3>
+          <p>Cada propiedad pasa por un proceso de revisión para garantizar que la documentación esté en orden y que la operación se realice con total transparencia, brindando tranquilidad durante la compra.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-banner">
+    <h2 class="animar">¿Encontraste la casa ideal?</h2>
+    <p class="animar">Contáctanos hoy y uno de nuestros asesores te guiará en cada paso del proceso.</p>
+    <a href="index.html#contacto" class="btn-cta animar">
+      <i class="ri-message-3-line"></i> Contacta con Nosotros
+    </a>
+  </section>
+
+  <footer>
+    <div class="footer-logo">AC Bienes Raíces</div>
+    <div class="redes-sociales">
+      <a href="https://www.facebook.com/share/18nZT3foJ2/?mibextid=wwXIfr" class="facebook" target="_blank" rel="noopener" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
+      <a href="https://www.instagram.com/ac_bienes_raices7?igsh=aGwxOW9vM2N0M2lm" class="instagram" target="_blank" rel="noopener" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+      <a href="https://www.tiktok.com/@alberto.cuellar.33?_r=1&_t=ZS-96wFAXMlx1Y" class="tiktok" target="_blank" rel="noopener" aria-label="TikTok"><i class="ri-tiktok-line"></i></a>
+    </div>
+    <p class="footer-copy">&copy; <span id="anioActual"></span> AC Bienes Raíces. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    document.getElementById('anioActual').textContent = new Date().getFullYear();
+    const hamburger  = document.getElementById('hamburger');
+    const navMobile  = document.getElementById('navMobile');
+    const cerrarMenu = document.getElementById('cerrarMenu');
+    hamburger.addEventListener('click', () => { hamburger.classList.add('abierto'); hamburger.setAttribute('aria-expanded','true'); navMobile.classList.add('visible'); document.body.style.overflow='hidden'; });
+    function cerrar() { hamburger.classList.remove('abierto'); hamburger.setAttribute('aria-expanded','false'); navMobile.classList.remove('visible'); document.body.style.overflow=''; }
+    cerrarMenu.addEventListener('click', cerrar);
+    document.querySelectorAll('.nav-mobile-link').forEach(l => l.addEventListener('click', cerrar));
+    const obs = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} }); }, {threshold:0.12});
+    document.querySelectorAll('.animar').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>

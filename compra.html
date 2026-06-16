@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compra / Venta – AC Bienes Raíces</title>
+
+  <!--
+    ============================================================
+    FAVICON
+    Para cambiar el favicon, reemplaza "img/logo.png" con la ruta
+    de tu nueva imagen. Para quitarlo, elimina esta línea completa.
+    ============================================================
+  -->
+  <link rel="icon" type="image/png" href="img/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       VARIABLES GLOBALES
+    ============================================================ */
+    :root {
+      --rojo:            #C32018;
+      --rojo-hover:      #A81B13;
+      --blanco:          #F5F5F5;
+      --negro:           #000000;
+      --gris:            #555555;
+      --gris-claro:      #cdcaca;
+      --gris-fondo:      #f4f4f4;
+      --verde-whatsapp:  #25D366;
+      --fuente-display:  'Cormorant Garamond', Georgia, serif;
+      --fuente-body:     'DM Sans', sans-serif;
+      --radio:           4px;
+      --transicion:      0.3s ease;
+      --max-ancho:       1160px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--fuente-body);
+      background: var(--blanco);
+      color: var(--negro);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    img  { display: block; max-width: 100%; height: auto; }
+    a    { text-decoration: none; color: inherit; }
+    ul   { list-style: none; }
+
+    /* ============================================================
+       WHATSAPP FLOTANTE
+    ============================================================ */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      width: 58px; height: 58px;
+      background: var(--verde-whatsapp);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      z-index: 600;
+      transition: transform var(--transicion), box-shadow var(--transicion);
+    }
+    .whatsapp-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
+    .whatsapp-btn i { font-size: 26px; color: #fff; }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 5%;
+      background: var(--negro);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.35);
+      transition: padding var(--transicion);
+    }
+
+    /*
+      LOGO IMAGEN
+      Cambia "img/logo.png" por la ruta correcta de tu logo.
+      Para eliminar el logo imagen y volver a texto, borra la etiqueta <img>
+      y descomenta el texto de respaldo dentro del <a class="logo-container">.
+    */
+    .logo-container {
+      display: flex; align-items: center;
+      max-width: 80px;
+      transition: transform var(--transicion);
+    }
+    .logo-container:hover { transform: scale(1.03); }
+    .logo-img { width: 100%; height: auto; object-fit: contain; }
+
+    /* Nav links escritorio */
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a {
+      font-size: 0.76rem; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gris-claro);
+      position: relative; padding-bottom: 4px;
+      transition: color var(--transicion);
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: var(--gris-claro);
+      transition: width var(--transicion);
+    }
+    .nav-links a:hover { color: var(--gris-claro); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Hamburguesa */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 26px; height: 2px;
+      background: var(--blanco);
+      transition: transform var(--transicion), opacity var(--transicion);
+    }
+    .hamburger.abierto span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.abierto span:nth-child(2) { opacity: 0; }
+    .hamburger.abierto span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Nav mobile */
+    .nav-mobile {
+      display: none; position: fixed; inset: 0;
+      background: var(--negro);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 28px; z-index: 999;
+    }
+    .nav-mobile.visible { display: flex; }
+    .nav-mobile a {
+      font-family: var(--fuente-display);
+      font-size: clamp(1.6rem, 6vw, 2.4rem);
+      color: var(--blanco); letter-spacing: 0.04em;
+      transition: color var(--transicion);
+    }
+    .nav-mobile a:hover { color: var(--rojo); }
+    .nav-mobile .cerrar {
+      position: absolute; top: 22px; right: 5%;
+      font-size: 2.2rem; color: var(--blanco);
+      background: none; border: none; cursor: pointer;
+    }
+
+    /* ============================================================
+       HERO DE PÁGINA INTERIOR
+    ============================================================ */
+    .hero-interior {
+      position: relative;
+      padding: 120px 5% 72px;
+      background: linear-gradient(135deg, rgba(195,32,24,0.88) 0%, rgba(0,0,0,0.95) 100%);
+      color: var(--blanco);
+      overflow: hidden;
+    }
+    .hero-interior::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url('img/promocional.png') center/cover no-repeat;
+      opacity: 0.08;
+      z-index: 0;
+    }
+    .hero-interior-contenido {
+      position: relative; z-index: 1;
+      max-width: var(--max-ancho); margin: 0 auto;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 14px;
+    }
+    .hero-interior h1 {
+      font-family: var(--fuente-display);
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 700; line-height: 1.15;
+      margin-bottom: 18px;
+    }
+    .hero-interior p {
+      font-size: 1rem; line-height: 1.8;
+      color: rgba(255,255,255,0.82);
+      max-width: 640px;
+    }
+
+    /* ============================================================
+       LÍNEA ROJA DECORATIVA
+    ============================================================ */
+    .linea-roja {
+      display: block; width: 48px; height: 3px;
+      background: var(--rojo); margin: 14px 0 22px;
+    }
+
+    /* ============================================================
+       CONTENEDOR GENERAL
+    ============================================================ */
+    .contenedor {
+      max-width: var(--max-ancho);
+      margin: 0 auto;
+      padding: 0 5%;
+    }
+
+    /* ============================================================
+       SECCIÓN TEXTO + IMAGEN
+    ============================================================ */
+    .seccion-texto-imagen {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      padding: 80px 5%;
+      max-width: var(--max-ancho);
+      margin: 0 auto;
+    }
+    .seccion-texto-imagen.invertida { direction: rtl; }
+    .seccion-texto-imagen.invertida > * { direction: ltr; }
+
+    .seccion-texto h2 {
+      font-family: var(--fuente-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 700; line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .seccion-texto p {
+      font-size: 0.97rem; line-height: 1.85;
+      color: var(--gris); margin-bottom: 14px;
+    }
+    .seccion-imagen img {
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+      width: 100%; object-fit: cover;
+    }
+
+    /* ============================================================
+       GRID DE TARJETAS DE CARACTERÍSTICAS
+    ============================================================ */
+    .seccion-cards {
+      background: var(--gris-fondo);
+      padding: 80px 5%;
+    }
+    .seccion-cards-inner {
+      max-width: var(--max-ancho);
+      margin: 0 auto;
+    }
+    .seccion-cards h2 {
+      font-family: var(--fuente-display);
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      font-weight: 700; margin-bottom: 8px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .card {
+      background: #fff;
+      border-left: 4px solid var(--rojo);
+      border-radius: var(--radio);
+      padding: 28px 24px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+      transition: transform var(--transicion), box-shadow var(--transicion);
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+    .card-num {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--rojo); margin-bottom: 10px;
+    }
+    .card h3 {
+      font-family: var(--fuente-display);
+      font-size: 1.25rem; font-weight: 600;
+      margin-bottom: 10px; color: var(--negro);
+    }
+    .card p { font-size: 0.9rem; line-height: 1.7; color: var(--gris); }
+
+    /* ============================================================
+       SECCIÓN AVISO / ALERTA
+    ============================================================ */
+    .seccion-aviso {
+      padding: 60px 5%;
+      max-width: var(--max-ancho);
+      margin: 0 auto;
+    }
+    .aviso-box {
+      background: #fff8f8;
+      border: 1.5px solid rgba(195,32,24,0.18);
+      border-left: 5px solid var(--rojo);
+      border-radius: var(--radio);
+      padding: 32px 28px;
+    }
+    .aviso-box h2 {
+      font-family: var(--fuente-display);
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 700; margin-bottom: 8px;
+    }
+    .aviso-box p { font-size: 0.95rem; line-height: 1.8; color: var(--gris); }
+
+    /* ============================================================
+       BOTÓN CTA – CONTACTA CON NOSOTROS
+       Toda la superficie es clickeable gracias al <a> envolvente.
+    ============================================================ */
+    .cta-banner {
+      background: var(--negro);
+      padding: 72px 5%;
+      text-align: center;
+    }
+    .cta-banner h2 {
+      font-family: var(--fuente-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700; color: var(--blanco);
+      margin-bottom: 14px;
+    }
+    .cta-banner p {
+      font-size: 1rem; color: rgba(255,255,255,0.7);
+      margin-bottom: 32px; max-width: 520px; margin-left: auto; margin-right: auto;
+    }
+    .btn-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 40px;
+      background: var(--rojo);
+      color: #fff;
+      border-radius: var(--radio);
+      font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: background var(--transicion), transform var(--transicion);
+    }
+    .btn-cta:hover { background: var(--rojo-hover); transform: translateY(-2px); }
+    .btn-cta i { font-size: 1.1rem; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: #1a1a1a; color: var(--blanco);
+      padding: 40px 5%; text-align: center;
+    }
+    .footer-logo {
+      font-family: var(--fuente-display);
+      font-size: 1.4rem; font-weight: 700;
+      margin-bottom: 18px; color: var(--gris-claro);
+    }
+    .redes-sociales {
+      display: flex; gap: 16px;
+      justify-content: center; margin-bottom: 18px;
+    }
+    .redes-sociales a {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      font-size: 1.15rem; color: var(--blanco);
+      transition: background var(--transicion);
+    }
+    .redes-sociales a.facebook:hover  { background: #1877F2; }
+    .redes-sociales a.instagram:hover { background: #E4405F; }
+    .redes-sociales a.tiktok:hover    { background: #000; border: 1px solid #fff; }
+    .footer-copy { font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+
+    /* ============================================================
+       ANIMACIONES DE ENTRADA
+    ============================================================ */
+    .animar {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .animar.visible { opacity: 1; transform: translateY(0); }
+
+    /* ============================================================
+       RESPONSIVO
+    ============================================================ */
+    @media (max-width: 900px) {
+      .seccion-texto-imagen {
+        grid-template-columns: 1fr;
+        gap: 36px;
+        padding: 56px 5%;
+      }
+      .seccion-texto-imagen.invertida { direction: ltr; }
+    }
+
+    @media (max-width: 768px) {
+      .hamburger  { display: flex; }
+      .nav-links  { display: none; }
+
+      .whatsapp-btn { bottom: 18px; right: 18px; width: 50px; height: 50px; }
+      .whatsapp-btn i { font-size: 22px; }
+
+      .hero-interior { padding: 100px 5% 56px; }
+
+      .seccion-cards { padding: 56px 5%; }
+      .cta-banner    { padding: 56px 5%; }
+    }
+
+    @media (max-width: 480px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- WHATSAPP FLOTANTE -->
+  <a href="https://wa.me/524722449605" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+    <i class="ri-whatsapp-line"></i>
+  </a>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header id="header">
+    <!--
+      LOGO IMAGEN
+      Reemplaza "img/logo.png" con la ruta real de tu logo.
+      Si prefieres texto en lugar de imagen, elimina la etiqueta <img>
+      y escribe el nombre de la empresa directamente aquí.
+    -->
+    <a href="index.html" class="logo-container" aria-label="AC Bienes Raíces – Inicio">
+      <img src="img/logo.png" alt="AC Bienes Raíces" class="logo-img" />
+    </a>
+
+    <nav aria-label="Navegación principal">
+      <ul class="nav-links">
+        <li><a href="compra.html">Compra/Venta</a></li>
+        <li><a href="traspasos.html">Traspasos</a></li>
+        <li><a href="casas.html">Casas</a></li>
+        <li><a href="terrenos.html">Terrenos</a></li>
+        <li><a href="credito_infonavit.html">Crédito Infonavit</a></li>
+        <li><a href="gestion-notarial.html">Asesoría Legal</a></li>
+      </ul>
+    </nav>
+
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- NAV MOBILE -->
+  <nav class="nav-mobile" id="navMobile" aria-label="Menú móvil">
+    <button class="cerrar" id="cerrarMenu" aria-label="Cerrar menú">
+      <i class="ri-close-line"></i>
+    </button>
+    <a href="compra.html"           class="nav-mobile-link">Compra/Venta</a>
+    <a href="traspasos.html"        class="nav-mobile-link">Traspasos</a>
+    <a href="casas.html"            class="nav-mobile-link">Casas</a>
+    <a href="terrenos.html"         class="nav-mobile-link">Terrenos</a>
+    <a href="credito_infonavit.html" class="nav-mobile-link">Crédito Infonavit</a>
+    <a href="gestion-notarial.html" class="nav-mobile-link">Asesoría Legal</a>
+  </nav>
+
+  <!-- ============================================================
+       HERO INTERIOR
+  ============================================================ -->
+  <section class="hero-interior">
+    <div class="hero-interior-contenido animar">
+      <span class="eyebrow">Nuestros Servicios</span>
+      <h1>Compra, vende o traspasa<br>tu propiedad</h1>
+      <p>
+        Con la mayor tranquilidad y confianza que te brindan nuestros asesores altamente calificados.
+        Tu experiencia será satisfactoria, rápida, segura y 100% transparente.
+        Operamos en Silao de la Victoria y sus alrededores con profundo conocimiento del mercado local.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TEXTO + IMAGEN
+  ============================================================ -->
+  <div class="seccion-texto-imagen">
+    <div class="seccion-texto animar">
+      <span class="eyebrow" style="color:var(--rojo);font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">¿Por qué elegirnos?</span>
+      <h2>Tu patrimonio,<br>en las mejores manos</h2>
+      <span class="linea-roja"></span>
+      <p>
+        Compra, vende o traspasa tu propiedad con la mayor tranquilidad y confianza que te brindan
+        nuestros asesores altamente calificados. Ayudamos a que tu experiencia sea satisfactoria,
+        rápida y segura, 100% transparente y eficaz.
+      </p>
+      <p>
+        Operamos en Silao de la Victoria y sus alrededores con un profundo conocimiento del mercado
+        local, ofreciéndote asesoría honesta y resultados reales.
+      </p>
+    </div>
+    <div class="seccion-imagen animar">
+      <img src="img/patrimonio.png" alt="Compra y venta de propiedades en Silao" />
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TARJETAS DE SERVICIOS
+  ============================================================ -->
+  <section class="seccion-cards">
+    <div class="seccion-cards-inner">
+      <h2 class="animar">Contamos con un equipo especialista en:</h2>
+      <span class="linea-roja animar"></span>
+
+      <div class="cards-grid">
+        <div class="card animar">
+          <p class="card-num">01</p>
+          <h3>Fotografía Profesional</h3>
+          <p>Visitamos tu propiedad y creamos una estrategia visual diseñada para acelerar la venta de tu inmueble, destacando sus mejores características y generando una conexión emocional con el comprador.</p>
+        </div>
+        <div class="card animar">
+          <p class="card-num">02</p>
+          <h3>Valuación Exacta</h3>
+          <p>Realizamos un análisis profundo del mercado local para establecer el precio correcto de tu inmueble y maximizar tu retorno de inversión.</p>
+        </div>
+        <div class="card animar">
+          <p class="card-num">03</p>
+          <h3>Marketing Digital</h3>
+          <p>Utilizamos plataformas online —buscadores y redes sociales— para captar compradores o inquilinos potenciales y acelerar el proceso de venta.</p>
+        </div>
+        <div class="card animar">
+          <p class="card-num">04</p>
+          <h3>Gestión Legal Completa</h3>
+          <p>Nuestro equipo jurídico protege el valor y la titularidad de tu inmueble en cada etapa: adquisición, desarrollo, arrendamiento o venta, brindando seguridad jurídica a todas las partes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CASAS CON ADEUDOS
+  ============================================================ -->
+  <div class="seccion-texto-imagen invertida" style="background:#fff; padding-top:80px; padding-bottom:80px;">
+    <div class="seccion-texto animar">
+      <span class="eyebrow" style="color:var(--rojo);font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">Oportunidades Especiales</span>
+      <h2>¿Casas con adeudos?<br>Convertimos problemas en soluciones</h2>
+      <span class="linea-roja"></span>
+      <p>
+        Trabajamos con propiedades que presentan situaciones financieras o legales complejas.
+        Nuestro equipo especializado facilita el proceso, brinda asesoría personalizada y encuentra
+        soluciones efectivas para superar cualquier obstáculo relacionado con adeudos.
+      </p>
+      <p>
+        Operamos con total transparencia para que tanto compradores como vendedores
+        obtengan los mejores resultados posibles.
+      </p>
+    </div>
+    <div class="seccion-imagen animar">
+      <img src="img/casas.png" alt="Casas con adeudos – soluciones inmobiliarias" />
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CTA – CONTACTA CON NOSOTROS
+       El <a> envuelve todo el botón para que toda su superficie sea clickeable.
+  ============================================================ -->
+  <section class="cta-banner">
+    <h2 class="animar">¿Listo para dar el siguiente paso?</h2>
+    <p class="animar">Nuestro equipo está disponible para asesorarte sin costo y sin compromiso.</p>
+    <a href="index.html#contacto" class="btn-cta animar">
+      <i class="ri-message-3-line"></i> Contacta con Nosotros
+    </a>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <div class="footer-logo">AC Bienes Raíces</div>
+    <div class="redes-sociales">
+      <a href="https://www.facebook.com/share/18nZT3foJ2/?mibextid=wwXIfr" class="facebook" target="_blank" rel="noopener" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
+      <a href="https://www.instagram.com/ac_bienes_raices7?igsh=aGwxOW9vM2N0M2lm" class="instagram" target="_blank" rel="noopener" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+      <a href="https://www.tiktok.com/@alberto.cuellar.33?_r=1&_t=ZS-96wFAXMlx1Y" class="tiktok" target="_blank" rel="noopener" aria-label="TikTok"><i class="ri-tiktok-line"></i></a>
+    </div>
+    <p class="footer-copy">&copy; <span id="anioActual"></span> AC Bienes Raíces. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    document.getElementById('anioActual').textContent = new Date().getFullYear();
+
+    /* Header scroll */
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header.style.boxShadow = window.scrollY > 60
+        ? '0 2px 24px rgba(0,0,0,0.45)' : '0 2px 20px rgba(0,0,0,0.35)';
+    });
+
+    /* Menú móvil */
+    const hamburger  = document.getElementById('hamburger');
+    const navMobile  = document.getElementById('navMobile');
+    const cerrarMenu = document.getElementById('cerrarMenu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.add('abierto');
+      hamburger.setAttribute('aria-expanded', 'true');
+      navMobile.classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    });
+
+    function cerrar() {
+      hamburger.classList.remove('abierto');
+      hamburger.setAttribute('aria-expanded', 'false');
+      navMobile.classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+    cerrarMenu.addEventListener('click', cerrar);
+    document.querySelectorAll('.nav-mobile-link').forEach(l => l.addEventListener('click', cerrar));
+
+    /* Animaciones de entrada */
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.animar').forEach(el => obs.observe(el));
+  </script>
+
+</body>
+</html>
